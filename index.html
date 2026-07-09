@@ -134,7 +134,8 @@
 
 <div class="footbar">
   <div class="footin">
-    <button class="btn primary" id="copy">複製全部紀錄</button>
+    <button class="btn primary" id="mail">寄到信箱</button>
+    <button class="btn ghost" id="copy">複製</button>
     <button class="btn ghost edittoggle" id="edit">編輯</button>
     <button class="btn ghost" id="backup">備份</button>
     <button class="btn ghost" id="reset">清空</button>
@@ -268,15 +269,24 @@ function updProgress(){
   document.getElementById("pbar").style.width=(total?done/total*100:0)+"%";
 }
 document.getElementById("edit").addEventListener("click",()=>{EDIT=!EDIT;render();if(!EDIT)toast("已離開編輯模式")});
-document.getElementById("copy").addEventListener("click",()=>{
+function buildReport(){
   const O=OUTINGS[ACTIVE];let L=[O.title+"・現場紀錄　"+O.meta,""];
   O.cases.forEach(p=>{L.push("〔"+p.n+" "+p.seg+"　"+p.tag+"　"+p.price+"〕");
     p.ask.forEach((_,i)=>L.push((g(p.id+"_ask_"+i)?"[x] ":"[ ] ")+qv(p,i)));
     const fl=p.fields.map((f,i)=>f[0]+"："+(g(p.id+"_fld_"+i)||"—")).join("　");if(fl)L.push("・"+fl);
     if(g(p.id+"_note"))L.push("・備註："+g(p.id+"_note"));L.push("")});
-  const txt=L.join("\n");
+  return L.join("\n");
+}
+document.getElementById("copy").addEventListener("click",()=>{
+  const txt=buildReport();
   (navigator.clipboard?.writeText(txt)||Promise.reject()).then(()=>toast("已複製，可貼到 LINE／備忘錄")).catch(()=>{
     const t=document.createElement("textarea");t.value=txt;document.body.appendChild(t);t.select();document.execCommand("copy");t.remove();toast("已複製")});
+});
+document.getElementById("mail").addEventListener("click",()=>{
+  const O=OUTINGS[ACTIVE];
+  const subj=encodeURIComponent(O.title+" 現場紀錄 "+O.meta);
+  const body=encodeURIComponent(buildReport());
+  location.href="mailto:carol@goodlivingnotes.com?subject="+subj+"&body="+body;
 });
 document.getElementById("backup").addEventListener("click",()=>{
   const blob=new Blob([JSON.stringify({outing:OUTINGS[ACTIVE].id,data:store},null,2)],{type:"application/json"});
