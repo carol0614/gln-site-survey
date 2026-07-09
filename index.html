@@ -7,16 +7,15 @@
 <title>看地看房・現場檢核</title>
 <style>
   :root{
-    --ground:#E7E5DD; --card:#FAF9F5; --ink:#2B2A26; --muted:#8A857A;
-    --olive:#6E756B; --olive-deep:#454B42; --olive-tint:#E4E7DF;
-    --line:#D9D5CB; --line-soft:#E6E3DA; --amber:#9A6B2F;
-    --shadow:0 1px 0 rgba(43,42,38,.04);
+    --ground:#E7E5DD;--card:#FAF9F5;--ink:#2B2A26;--muted:#8A857A;
+    --olive:#6E756B;--olive-deep:#454B42;--olive-tint:#E4E7DF;
+    --line:#D9D5CB;--line-soft:#E6E3DA;--amber:#9A6B2F;--shadow:0 1px 0 rgba(43,42,38,.04);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0}
   body{background:var(--ground);color:var(--ink);
     font-family:-apple-system,"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
-    font-size:16px;line-height:1.55;padding-bottom:96px}
+    font-size:16px;line-height:1.55;padding-bottom:100px}
   .wrap{max-width:620px;margin:0 auto;padding:0 14px}
   .tnum{font-variant-numeric:tabular-nums}
   .eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--olive);font-weight:600}
@@ -38,11 +37,15 @@
   .chip.done{background:var(--olive-tint);border-color:var(--olive)}
   .chip:active{transform:scale(.96)}
 
+  .editbar{max-width:620px;margin:0 auto;display:none;align-items:center;gap:8px;padding:8px 14px;font-size:13px;color:var(--amber)}
+  body.edit .editbar{display:flex}
   section.carry{margin:14px 0 2px}
   .carry-row{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:14px;color:var(--muted);padding:10px 0}
 
   .block{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:14px 0;box-shadow:var(--shadow);overflow:hidden;scroll-margin-top:104px}
-  .bhead{display:flex;gap:12px;align-items:center;padding:13px 15px 12px}
+  .photo{display:block;width:100%;height:150px;object-fit:cover;background:var(--line-soft)}
+  .photo.ph{display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;height:64px;border-bottom:1px dashed var(--line)}
+  .bhead{display:flex;gap:12px;align-items:center;padding:12px 15px}
   .badge{flex:none;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--olive);color:var(--olive-deep);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px}
   .btitle{flex:1;min-width:0}
   .btitle .seg{font-size:17px;font-weight:600;letter-spacing:-.01em}
@@ -63,6 +66,8 @@
   .info .k{font-size:11px;color:var(--muted);letter-spacing:.02em}
   .info .v{color:var(--ink);font-weight:500}
   .info .v.tbc{color:var(--amber);font-weight:400}
+  .info .v input{width:100%;border:1px solid var(--olive-tint);border-radius:6px;background:#fff;font:inherit;font-size:13px;color:var(--ink);padding:3px 6px}
+  .info .v input:focus{outline:none;border-color:var(--olive)}
 
   .sublabel{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:12px 15px 4px;font-weight:600}
   .ask{display:flex;gap:11px;padding:9px 15px;align-items:flex-start;cursor:pointer;border-top:1px solid var(--line-soft)}
@@ -73,13 +78,16 @@
   .ask.checked .cbox svg{opacity:1}
   .ask .q{flex:1;font-size:15px;line-height:1.5}
   .ask.checked .q{color:var(--muted)}
+  .ask .q input{width:100%;border:1px solid var(--olive-tint);border-radius:6px;background:#fff;font:inherit;font-size:14px;color:var(--ink);padding:5px 7px}
+  .ask .q input:focus{outline:none;border-color:var(--olive)}
+  .addq{font-size:13px;color:var(--olive);padding:6px 15px 2px;cursor:pointer;display:none}
+  body.edit .addq{display:block}
 
   .fields{padding:6px 15px 4px;display:flex;flex-wrap:wrap;gap:10px 14px}
   .field{display:flex;align-items:baseline;gap:6px;font-size:13px;color:var(--muted)}
   .field input{border:none;border-bottom:1.5px dotted var(--line);background:transparent;font:inherit;font-size:14px;color:var(--ink);padding:2px 2px 3px;min-width:64px}
   .field input::placeholder{color:#c3bfb3}
   .field input:focus{outline:none;border-bottom-color:var(--olive)}
-
   .note{padding:8px 15px 14px}
   .note textarea{width:100%;border:1px solid var(--line);border-radius:9px;background:#fff;font:inherit;font-size:14px;color:var(--ink);padding:8px 10px;resize:vertical;min-height:44px}
   .note textarea:focus{outline:none;border-color:var(--olive)}
@@ -91,14 +99,15 @@
   .btn.primary{flex:1;background:var(--olive);color:#fff;padding:12px;font-size:15px}
   .btn.primary:active{background:var(--olive-deep)}
   .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--muted);font-weight:400;font-size:13px;padding:12px 12px}
+  body.edit .btn.edittoggle{background:var(--amber);color:#fff;border-color:var(--amber)}
   .saved{font-size:12px;color:var(--muted);text-align:center;padding-top:6px;min-height:15px}
-  .toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(12px);background:var(--olive-deep);color:#fff;font-size:14px;padding:10px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:.25s;z-index:40}
+  .toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%) translateY(12px);background:var(--olive-deep);color:#fff;font-size:14px;padding:10px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:.25s;z-index:40}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<h2 class="sr-only">看地看房現場檢核工具：每個案子顯示基本資料，逐項打勾必問事項、填寫缺補欄位、記錄備註，資料自動儲存於本機瀏覽器。</h2>
+<h2 class="sr-only">看地看房現場檢核工具：每個案子有照片與基本資料，逐項打勾必問、填缺補欄位、記錄備註；可切換編輯模式修改內容；資料自動儲存於本機瀏覽器。</h2>
 
 <header>
   <div class="hrow">
@@ -112,6 +121,7 @@
   <div class="pbar-outer"><div class="pbar" id="pbar"></div></div>
 </header>
 <nav><div class="chips" id="chips"></div></nav>
+<div class="editbar"><span>✏︎ 編輯模式：可直接改基本資料與必問文字（存本機）。地E/地F 照片為線上物件、地C 為紙本 DM。</span></div>
 
 <div class="wrap">
   <section class="carry">
@@ -125,6 +135,7 @@
 <div class="footbar">
   <div class="footin">
     <button class="btn primary" id="copy">複製全部紀錄</button>
+    <button class="btn ghost edittoggle" id="edit">編輯</button>
     <button class="btn ghost" id="backup">備份</button>
     <button class="btn ghost" id="reset">清空</button>
   </div>
@@ -133,40 +144,35 @@
 <div class="toast" id="toast"></div>
 
 <script>
-/* =========================================================================
-   資料區　DATA — 要新增看地/看房，就在 OUTINGS 陣列裡加一個梯次物件即可。
-   每個 case：n 編號 / id 唯一碼 / seg 名稱 / tag 副標 / sched 時間 /
-   price 開價 / agent 仲介 / tel 電話 / map "緯度,經度"(導航) /
-   info [[標籤,值]...] 基本資料(值含「待確認」會標成橘字) /
-   ask [必問事項...] / fields [[缺補欄位,提示]...]
-   ========================================================================= */
+/* ===== 資料區 DATA — 新增看地/看房＝在 OUTINGS 加一個梯次物件 =====
+   case：n編號 id唯一碼 seg名稱 tag副標 sched時間 price開價 agent仲介 tel電話
+   map 導航(門牌地址或"緯度,經度") photo 照片(img/x.jpg，留空=紙本佔位)
+   info[[標籤,值(,1=整列寬)]] / ask[必問] / fields[[缺補欄,提示]] */
 const OUTINGS=[
-{
-  id:"gongguan6-20260717", title:"公館六筆看地", eyebrow:"site survey · 苗栗公館",
-  meta:"7/17（四）13:00–16:50",
+{ id:"gongguan6-20260717", title:"公館六筆看地", eyebrow:"site survey · 苗栗公館", meta:"7/17（四）13:00–16:50",
   carry:["捲尺／雷射測距","地籍謄本影本","手機指南針","筆"],
   cases:[
-   {n:"①",id:"A",seg:"地A 福東段",tag:"小農舍・規劃全拆",sched:"13:00",price:"1,627 萬",agent:"陳宥翔",tel:"0908256979",map:"24.479,120.848",
+   {n:"①",id:"A",seg:"地A 福東段",tag:"小農舍・規劃全拆",sched:"13:00",price:"1,627 萬",agent:"陳宥翔",tel:"0908256979",map:"苗栗縣公館鄉福基村172號",photo:"img/A.jpg",
     info:[["坪數・單價","95.71 坪・17.0 萬/坪"],["容積・建蔽","非都市甲建 60%｜240%（假設）"],["面寬×深","約 19m × 17m"],["臨路","約 5m"],["座向","待確認"],["距交流道","約 6.9 km"],["學區","福基國小"],["現況","小農舍・全拆"],["位置","後龍溪邊",1]],
     ask:["臨路約 5m 的退縮規定？建築線指示申請流程與時程？"],
     fields:[["座向",""],["地號",""],["地目",""]]},
-   {n:"②",id:"B",seg:"地B 福基段",tag:"陶藝館・規劃全拆",sched:"13:40",price:"1,680 萬",agent:"陳宥翔",tel:"0908256979",map:"24.471,120.834",
+   {n:"②",id:"B",seg:"地B 福基段",tag:"陶藝館・規劃全拆",sched:"13:40",price:"1,680 萬",agent:"陳宥翔",tel:"0908256979",map:"福星陶藝館 苗栗縣公館鄉",photo:"img/B.jpg",
     info:[["坪數・單價","127.96 坪・13.1 萬/坪"],["容積・建蔽","非都市甲建 60%｜240%（假設）"],["面寬×深","約 45m × 29m"],["臨路","30m 大路"],["座向","待確認"],["距交流道","約 7.1 km"],["學區","福基國小・公館國中"],["現況","鋼構一樓・全拆"],["位置","紅棗基地",1]],
     ask:["128 坪的地目逐筆內容？是否全部為可建地？","臨 30m 大路退縮多深？"],
     fields:[["座向",""],["周邊農業使用",""]]},
-   {n:"③",id:"E",seg:"地E 石墻",tag:"花園透天・205 坪・全拆",sched:"14:20",price:"2,250 萬",agent:"中信頭份",tel:"037665251",map:"24.474,120.823",
+   {n:"③",id:"E",seg:"地E 石墻",tag:"花園透天・205 坪・全拆",sched:"14:20",price:"2,250 萬",agent:"中信頭份",tel:"037665251",map:"苗栗縣公館鄉石墻村",photo:"img/E.jpg",
     info:[["坪數・單價","登記 205.1 坪・32.13 萬/坪"],["容積・建蔽","非都市甲建 60%｜240%（推定・待謄本）"],["面寬×深","待確認"],["臨路","待確認"],["座向","待確認"],["距交流道","約 6.6 km"],["學區","待確認"],["現況","花園透天・43 年・全拆"],["位置","石圍牆",1]],
     ask:["205 坪逐筆地目組成、是否全為可建地？","既有建物有無使用執照？（客戶全拆重建）"],
     fields:[["面寬×深",""],["臨路",""],["座向",""]]},
-   {n:"④",id:"C",seg:"地C 館南段",tag:"雙塊地・合併購買",sched:"15:00",price:"1,196 萬",agent:"金美地產",tel:"037676839",map:"24.5045,120.8246",
-    info:[["坪數・單價","合併 83.2 坪・14.4 萬/坪"],["肉地","約 65 坪（扣道路佔用）"],["容積・建蔽","都計住宅區 60%｜180%"],["面寬×深","10.8m × 20m（合併）"],["臨路","前約 7.5m・後約 3.5m"],["座向","座西朝東"],["距交流道","約 3.3 km"],["學區","公館國小/國中・苗中・聯大"],["現況","空地・三塊地號拼成"],["位置","公館市區巷子",1]],
+   {n:"④",id:"C",seg:"地C 館南段",tag:"雙塊地・合併購買",sched:"15:00",price:"1,196 萬",agent:"金美地產",tel:"037676839",map:"24.5018,120.8308",photo:"",
+    info:[["坪數・單價","合併 83.2 坪・14.4 萬/坪"],["肉地","約 65 坪（扣道路佔用）"],["容積・建蔽","都計住宅區 60%｜180%"],["面寬×深","10.8m × 20m（合併）"],["臨路","前約 7.5m・後約 3.5m"],["座向","座西朝東"],["距交流道","約 3.3 km"],["學區","公館國小/國中・苗中・聯大"],["現況","空地・三塊地號拼成"],["位置","公館市區巷子（館南村東和街26之2號）",1]],
     ask:["三塊界址是否相鄰、可否合併為一宗？","肉地實際坪數（扣道路佔用）需地政複丈？"],
     fields:[["臨路 前",""],["臨路 後",""],["地號",""],["分區證明",""]]},
-   {n:"⑤",id:"D",seg:"地D 五谷",tag:"雙店面・三層樓・全拆",sched:"15:40",price:"1,788 萬",agent:"信義崇德店",tel:"0423692755",map:"24.502,120.830",
-    info:[["坪數・單價","地 92.19 坪・19.39 萬/坪"],["降價","原 2,088・降 14.4%"],["容積・建蔽","都計住宅區 60%｜180%"],["面寬×深","14m × 20m"],["臨路","前後臨路"],["座向","朝東南"],["距交流道","登錄 156m / 2.2 分・直線 3.8km（待確認）"],["現況","三層樓有裝潢・全拆"],["位置","近公館市區交流道",1]],
+   {n:"⑤",id:"D",seg:"地D 五谷",tag:"雙店面・三層樓・全拆",sched:"15:40",price:"1,788 萬",agent:"信義 李經理",tel:"0931635817",map:"苗栗縣公館鄉玉谷村向陽69號",photo:"img/D.jpg",
+    info:[["坪數・單價","地 92.19 坪・19.39 萬/坪"],["降價","原 2,088・降 14.4%"],["容積・建蔽","都計住宅區 60%｜180%"],["面寬×深","14m × 20m"],["臨路","前後臨路"],["座向","朝東南"],["距交流道","登錄 156m / 2.2 分・直線 3.8km（待確認）"],["現況","三層樓有裝潢・全拆"],["崇德店線","04-2369-2755"],["位置","近公館市區交流道",1]],
     ask:["使用分區可否住宅重建？","距交流道實際多少？（登錄 156m vs 直線 3.8km 矛盾）","現況有無租約？加蓋部分有無違建列管？"],
     fields:[["地號",""],["月租（若有）",""]]},
-   {n:"⑥",id:"F",seg:"地F 尖山",tag:"寬境宅・7 年新・全拆",sched:"16:20",price:"1,880 萬",agent:"住商邱棠",tel:"0988395882",map:"24.542,120.838",
+   {n:"⑥",id:"F",seg:"地F 尖山",tag:"寬境宅・7 年新・全拆",sched:"16:20",price:"1,880 萬",agent:"住商邱棠",tel:"0988395882",map:"苗栗縣公館鄉尖山村",photo:"img/F.jpg",
     info:[["坪數・單價","登記 84.69 坪・25.68 萬/坪"],["容積・建蔽","非都市住 60%｜240%（推定・待謄本）"],["面寬×深","待確認"],["臨路","待確認"],["座向","坐西朝東"],["距交流道","約 2.6 km"],["學區","待確認"],["現況","7 年新透天・全拆"],["位置","尖山",1]],
     ask:["使用分區（住家用）可否重建電梯別墅？","屋齡僅 7 年，全拆殘值與拆除成本評估？","既有建物有無使用執照？"],
     fields:[["面寬×深",""],["臨路",""],["地目","座向已知坐西朝東"]]},
@@ -174,15 +180,19 @@ const OUTINGS=[
 }
 ];
 
-let ACTIVE=0;
+let ACTIVE=0, EDIT=false;
 const KEY=()=>"gln_survey_"+OUTINGS[ACTIVE].id;
 let store={};
 function load(){try{store=JSON.parse(localStorage.getItem(KEY())||"{}")}catch(e){store={}}}
 function save(){try{localStorage.setItem(KEY(),JSON.stringify(store))}catch(e){}}
 const g=k=>store[k], put=(k,v)=>{store[k]=v;save()};
+const iv=(p,i)=>{const o=g(p.id+"_ei_"+i);return o!=null?o:(p.info[i]?p.info[i][1]:"")};
+const qv=(p,i)=>{const o=g(p.id+"_eq_"+i);return o!=null?o:(p.ask[i]||"")};
+const tbc=v=>/待確認|待謄本|待查/.test(v);
 
 const CHK=`<svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>`;
 const el=h=>{const d=document.createElement("div");d.innerHTML=h.trim();return d.firstChild};
+const esc=s=>String(s).replace(/"/g,"&quot;").replace(/</g,"&lt;");
 const fmtTel=t=>t.replace(/^(\d{2,4})(\d{3})(\d+)$/,"$1-$2-$3");
 let st;
 function flashSaved(){const m=document.getElementById("savedmsg");m.textContent="✓ 已儲存";m.style.color="var(--olive)";clearTimeout(st);st=setTimeout(()=>{m.textContent="變更會自動儲存在這支手機／瀏覽器";m.style.color="var(--muted)"},1200)}
@@ -191,78 +201,77 @@ function toast(t){const e=document.getElementById("toast");e.textContent=t;e.cla
 function render(){
   load();
   const O=OUTINGS[ACTIVE];
+  document.body.classList.toggle("edit",EDIT);
+  document.getElementById("edit").textContent=EDIT?"完成":"編輯";
   document.getElementById("eyebrow").textContent=O.eyebrow||"site survey";
   document.getElementById("otitle").textContent=O.title;
   document.getElementById("ometa").innerHTML=O.meta+'<br><span id="cnt" class="tnum">0 / 0 已問</span>';
-  // outing selector
   const sel=document.getElementById("oselect");
-  if(OUTINGS.length>1){sel.hidden=false;sel.innerHTML=OUTINGS.map((o,i)=>`<option value="${i}" ${i===ACTIVE?"selected":""}>${o.title}</option>`).join("");
-    sel.onchange=()=>{ACTIVE=+sel.value;render()}}
-  // carry
+  if(OUTINGS.length>1){sel.hidden=false;sel.innerHTML=OUTINGS.map((o,i)=>`<option value="${i}" ${i===ACTIVE?"selected":""}>${o.title}</option>`).join("");sel.onchange=()=>{ACTIVE=+sel.value;render()}}
   const carry=document.getElementById("carry");carry.innerHTML="";
   O.carry.forEach((c,i)=>{const k="carry_"+i;
     const box=el(`<label class="ask" style="padding:0;border:none;gap:8px"><span class="cbox">${CHK}</span><span class="q" style="font-size:14px">${c}</span></label>`);
     if(g(k))box.classList.add("checked");
     box.addEventListener("click",e=>{e.preventDefault();const nv=!g(k);put(k,nv);box.classList.toggle("checked",nv);flashSaved()});
     carry.appendChild(box)});
-  // chips
   const chips=document.getElementById("chips");chips.innerHTML="";
   O.cases.forEach(p=>chips.appendChild(el(`<a class="chip" id="chip_${p.id}" href="#blk_${p.id}"><b>${p.n}</b> ${p.seg.replace(/^地[A-F] /,"")}</a>`)));
-  // cases
   const app=document.getElementById("app");app.innerHTML="";
   O.cases.forEach(p=>{
     const b=el(`<div class="block" id="blk_${p.id}"></div>`);
+    if(p.photo){b.appendChild(el(`<a href="${p.photo}" target="_blank" rel="noopener"><img class="photo" src="${p.photo}" alt="${p.seg} 物件照片" loading="lazy"></a>`));}
+    else{b.appendChild(el(`<div class="photo ph">紙本 DM・可自行貼照片</div>`));}
     b.appendChild(el(`<div class="bhead"><div class="badge">${p.n}</div>
       <div class="btitle"><div class="seg">${p.seg}</div><div class="tag">${p.sched?p.sched+"　":""}${p.tag}</div></div>
       <div class="price tnum">${p.price}</div></div>`));
     b.appendChild(el(`<div class="call">
       <a class="act" href="tel:${p.tel}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h4l2 5-3 2a11 11 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg><span class="who">${p.agent}</span><span class="num tnum">${fmtTel(p.tel)}</span></a>
-      <a class="act nav" href="https://www.google.com/maps/search/?api=1&query=${p.map}" target="_blank" rel="noopener"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>導航</a></div>`));
-    // 基本資料
+      <a class="act nav" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.map)}" target="_blank" rel="noopener"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>導航</a></div>`));
     const info=el(`<div class="info"></div>`);
-    p.info.forEach(row=>{const tbc=/待確認|待謄本/.test(row[1]);
-      info.appendChild(el(`<div class="cell${row[2]?" full":""}"><span class="k">${row[0]}</span><span class="v${tbc?" tbc":""}">${row[1]}</span></div>`))});
+    p.info.forEach((row,i)=>{const val=iv(p,i);const full=row[2]?" full":"";
+      if(EDIT){info.appendChild(el(`<div class="cell${full}"><span class="k">${row[0]}</span><span class="v"><input data-ei="${i}" value="${esc(val)}"></span></div>`));}
+      else{info.appendChild(el(`<div class="cell${full}"><span class="k">${row[0]}</span><span class="v${tbc(val)?" tbc":""}">${val||"—"}</span></div>`));}
+    });
+    info.querySelectorAll("input[data-ei]").forEach(inp=>inp.addEventListener("input",()=>{put(p.id+"_ei_"+inp.dataset.ei,inp.value);flashSaved()}));
     b.appendChild(info);
-    // 必問
     b.appendChild(el(`<div class="sublabel">必問事項 · 打勾</div>`));
-    p.ask.forEach((q,i)=>{const k=p.id+"_ask_"+i;
-      const row=el(`<label class="ask${i===0?" first":""}"><span class="cbox">${CHK}</span><span class="q">${q}</span></label>`);
+    p.ask.forEach((_,i)=>{const k=p.id+"_ask_"+i;const q=qv(p,i);
+      const row=el(`<label class="ask${i===0?" first":""}"><span class="cbox">${CHK}</span><span class="q">${EDIT?`<input data-eq="${i}" value="${esc(q)}">`:q}</span></label>`);
       if(g(k))row.classList.add("checked");
-      row.addEventListener("click",e=>{e.preventDefault();const nv=!g(k);put(k,nv);row.classList.toggle("checked",nv);updProgress();flashSaved()});
+      if(EDIT){const inp=row.querySelector("input");inp.addEventListener("input",()=>{put(p.id+"_eq_"+i,inp.value);flashSaved()});row.style.cursor="default";}
+      else{row.addEventListener("click",e=>{e.preventDefault();const nv=!g(k);put(k,nv);row.classList.toggle("checked",nv);updProgress();flashSaved()});}
       b.appendChild(row)});
-    // 缺補
+    const addq=el(`<div class="addq">＋ 新增必問</div>`);
+    addq.addEventListener("click",()=>{p.ask.push("新問題…");render()});
+    b.appendChild(addq);
     b.appendChild(el(`<div class="sublabel">缺補 · 現場量／確認</div>`));
     const fw=el(`<div class="fields"></div>`);
     p.fields.forEach((f,i)=>{const k=p.id+"_fld_"+i;
       const fl=el(`<label class="field">${f[0]}<input type="text" placeholder="${f[1]||"____"}"></label>`);
       const inp=fl.querySelector("input");inp.value=g(k)||"";
       const sz=()=>inp.style.width=Math.max(64,(inp.value.length||6)*15)+"px";sz();
-      inp.addEventListener("input",()=>{put(k,inp.value);sz();flashSaved()});
-      fw.appendChild(fl)});
+      inp.addEventListener("input",()=>{put(k,inp.value);sz();flashSaved()});fw.appendChild(fl)});
     b.appendChild(fw);
-    // 備註
     const nk=p.id+"_note";
     const nt=el(`<div class="note"><span class="nl">印象／備註</span><textarea placeholder="現場感覺、報價談判、加分/扣分點…"></textarea></div>`);
-    const ta=nt.querySelector("textarea");ta.value=g(nk)||"";
-    ta.addEventListener("input",()=>{put(nk,ta.value);flashSaved()});
-    b.appendChild(nt);
-    app.appendChild(b);
+    const ta=nt.querySelector("textarea");ta.value=g(nk)||"";ta.addEventListener("input",()=>{put(nk,ta.value);flashSaved()});
+    b.appendChild(nt);app.appendChild(b);
   });
   updProgress();
 }
 function updProgress(){
   const O=OUTINGS[ACTIVE];let total=0,done=0;
   O.cases.forEach(p=>{total+=p.ask.length;p.ask.forEach((_,i)=>{if(g(p.id+"_ask_"+i))done++});
-    const all=p.ask.every((_,i)=>g(p.id+"_ask_"+i));
+    const all=p.ask.length&&p.ask.every((_,i)=>g(p.id+"_ask_"+i));
     const c=document.getElementById("chip_"+p.id);if(c)c.classList.toggle("done",all)});
   const cnt=document.getElementById("cnt");if(cnt)cnt.textContent=done+" / "+total+" 已問";
   document.getElementById("pbar").style.width=(total?done/total*100:0)+"%";
 }
-
+document.getElementById("edit").addEventListener("click",()=>{EDIT=!EDIT;render();if(!EDIT)toast("已離開編輯模式")});
 document.getElementById("copy").addEventListener("click",()=>{
   const O=OUTINGS[ACTIVE];let L=[O.title+"・現場紀錄　"+O.meta,""];
   O.cases.forEach(p=>{L.push("〔"+p.n+" "+p.seg+"　"+p.tag+"　"+p.price+"〕");
-    p.ask.forEach((q,i)=>L.push((g(p.id+"_ask_"+i)?"[x] ":"[ ] ")+q));
+    p.ask.forEach((_,i)=>L.push((g(p.id+"_ask_"+i)?"[x] ":"[ ] ")+qv(p,i)));
     const fl=p.fields.map((f,i)=>f[0]+"："+(g(p.id+"_fld_"+i)||"—")).join("　");if(fl)L.push("・"+fl);
     if(g(p.id+"_note"))L.push("・備註："+g(p.id+"_note"));L.push("")});
   const txt=L.join("\n");
@@ -273,8 +282,7 @@ document.getElementById("backup").addEventListener("click",()=>{
   const blob=new Blob([JSON.stringify({outing:OUTINGS[ACTIVE].id,data:store},null,2)],{type:"application/json"});
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=OUTINGS[ACTIVE].id+"_紀錄.json";a.click();toast("已下載備份檔")});
 document.getElementById("reset").addEventListener("click",()=>{
-  if(confirm("清空此梯次所有打勾與紀錄？此動作無法復原。")){store={};save();render()}});
-
+  if(confirm("清空此梯次所有打勾、填寫與編輯？此動作無法復原。")){store={};save();render()}});
 render();
 </script>
 </body>
