@@ -194,7 +194,12 @@ const tbc=v=>/待確認|待謄本|待查/.test(v);
 const CHK=`<svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>`;
 const el=h=>{const d=document.createElement("div");d.innerHTML=h.trim();return d.firstChild};
 const esc=s=>String(s).replace(/"/g,"&quot;").replace(/</g,"&lt;");
-const fmtTel=t=>t.replace(/^(\d{2,4})(\d{3})(\d+)$/,"$1-$2-$3");
+const fmtTel=t=>{
+  if(/^09\d{8}$/.test(t))return t.replace(/(\d{4})(\d{3})(\d{3})/,"$1-$2-$3");
+  if(/^037\d+$/.test(t))return t.replace(/(037)(\d{3})(\d+)/,"$1-$2-$3");
+  if(/^0[2-8]\d{7,8}$/.test(t))return t.replace(/(0\d)(\d{4})(\d+)/,"$1-$2-$3");
+  return t.replace(/(\d{2,4})(\d{3})(\d+)/,"$1-$2-$3");
+};
 let st;
 function flashSaved(){const m=document.getElementById("savedmsg");m.textContent="✓ 已儲存";m.style.color="var(--olive)";clearTimeout(st);st=setTimeout(()=>{m.textContent="變更會自動儲存在這支手機／瀏覽器";m.style.color="var(--muted)"},1200)}
 function toast(t){const e=document.getElementById("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1900)}
