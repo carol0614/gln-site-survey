@@ -34,7 +34,9 @@
   .chips::-webkit-scrollbar{display:none}
   .chip{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:5px 11px;font-size:13px;color:var(--ink);text-decoration:none;display:flex;gap:5px;align-items:center;transition:.15s}
   .chip b{color:var(--olive-deep);font-weight:600}
+  .chip .ctime{color:var(--olive-deep);font-weight:700;font-variant-numeric:tabular-nums;background:var(--olive-tint);border-radius:6px;padding:0 5px;margin-left:2px}
   .chip.done{background:var(--olive-tint);border-color:var(--olive)}
+  .chip.done .ctime{background:var(--card)}
   .chip:active{transform:scale(.96)}
 
   .editbar{max-width:620px;margin:0 auto;display:none;align-items:center;gap:8px;padding:8px 14px;font-size:13px;color:var(--amber)}
@@ -47,17 +49,22 @@
   .photo.ph{display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;height:80px;border-bottom:1px dashed var(--line)}
   .bhead{display:flex;gap:12px;align-items:center;padding:12px 15px}
   .badge{flex:none;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--olive);color:var(--olive-deep);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px}
+  .timeblock{flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:62px;padding:6px 10px;border-radius:12px;background:var(--olive-deep);color:#fff;box-shadow:var(--shadow)}
+  .timeblock .tl{font-size:9px;letter-spacing:.18em;font-weight:600;opacity:.82}
+  .timeblock .tt{font-size:19px;font-weight:700;line-height:1.15;letter-spacing:.01em;font-variant-numeric:tabular-nums}
   .btitle{flex:1;min-width:0}
   .btitle .seg{font-size:17px;font-weight:600;letter-spacing:-.01em}
+  .btitle .segnum{color:var(--olive);font-weight:700;margin-right:3px}
   .btitle .tag{font-size:12px;color:var(--muted);margin-top:1px}
   .price{font-size:16px;font-weight:600;text-align:right;white-space:nowrap}
 
-  .call{display:flex;align-items:stretch;margin:0 15px;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
-  .act{flex:1;display:flex;align-items:center;gap:6px;padding:11px 2px;font-size:13px;color:var(--olive-deep);text-decoration:none}
+  .call{display:flex;align-items:center;gap:10px;margin:0 15px;padding:6px 0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
+  .act{flex:1;display:flex;align-items:center;gap:6px;padding:9px 2px;font-size:13px;color:var(--olive-deep);text-decoration:none}
   .act svg{flex:none}
   .act .who{color:var(--ink)}
   .act .num{font-weight:600;letter-spacing:.02em;color:var(--muted)}
-  .act.nav{flex:none;justify-content:flex-end;padding-left:16px;border-left:1px solid var(--line-soft);font-weight:600}
+  .act.nav{flex:none;justify-content:center;gap:6px;padding:10px 20px;background:var(--olive);color:#fff;border-radius:999px;font-weight:600;font-size:14px;box-shadow:var(--shadow)}
+  .act.nav:active{opacity:1;background:var(--olive-deep)}
   .act:active{opacity:.6}
 
   .info{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line-soft);border-bottom:1px solid var(--line-soft)}
@@ -217,14 +224,14 @@ function render(){
     box.addEventListener("click",e=>{e.preventDefault();const nv=!g(k);put(k,nv);box.classList.toggle("checked",nv);flashSaved()});
     carry.appendChild(box)});
   const chips=document.getElementById("chips");chips.innerHTML="";
-  O.cases.forEach(p=>chips.appendChild(el(`<a class="chip" id="chip_${p.id}" href="#blk_${p.id}"><b>${p.n}</b> ${p.seg.replace(/^地[A-F] /,"")}</a>`)));
+  O.cases.forEach(p=>chips.appendChild(el(`<a class="chip" id="chip_${p.id}" href="#blk_${p.id}"><b>${p.n}</b> ${p.seg.replace(/^地[A-F] /,"")}${p.sched?`<span class="ctime tnum">${p.sched}</span>`:""}</a>`)));
   const app=document.getElementById("app");app.innerHTML="";
   O.cases.forEach(p=>{
     const b=el(`<div class="block" id="blk_${p.id}"></div>`);
     if(p.photo){b.appendChild(el(`<a href="${p.photo}" target="_blank" rel="noopener"><img class="photo" src="${p.photo}" alt="${p.seg} 物件照片" loading="lazy"></a>`));}
     else{b.appendChild(el(`<div class="photo ph">紙本 DM・可自行貼照片</div>`));}
-    b.appendChild(el(`<div class="bhead"><div class="badge">${p.n}</div>
-      <div class="btitle"><div class="seg">${p.seg}</div><div class="tag">${p.sched?p.sched+"　":""}${p.tag}</div></div>
+    b.appendChild(el(`<div class="bhead">${p.sched?`<div class="timeblock"><span class="tl">預約</span><span class="tt">${p.sched}</span></div>`:`<div class="badge">${p.n}</div>`}
+      <div class="btitle"><div class="seg"><span class="segnum">${p.n}</span>${p.seg}</div><div class="tag">${p.tag}</div></div>
       <div class="price tnum">${p.price}</div></div>`));
     b.appendChild(el(`<div class="call">
       <a class="act" href="tel:${p.tel}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h4l2 5-3 2a11 11 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg><span class="who">${p.agent}</span><span class="num tnum">${fmtTel(p.tel)}</span></a>
